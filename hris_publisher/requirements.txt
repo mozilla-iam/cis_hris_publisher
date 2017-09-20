@@ -1,0 +1,6 @@
+git+git://github.com/mozilla-iam/cis.git@master#egg=cis
+jsonschema
+everett==0.9
+pluginbase
+boto3 #no-deploy
+botocore #no-deploy

@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "http://sso.mozilla.com/hris_publisher",
+  "required": [
+    "Cost_Center",
+    "Cost_Center_Hierarchy",
+    "IsManager",
+    "EgenciaPOSCountry"
+  ],
+  "properties": {
+    "Cost_Center": {
+      "id": "/properties/Cost_Center",
+      "type": "string"
+    },
+    "Cost_Center_Hierarchy": {
+      "id": "/properties/Cost_Center_Hierarchy",
+      "type": "string"
+    },
+    "CurrentlyActive": {
+      "id": "/properties/CurrentlyActive",
+      "type": "string"
+    },
+    "DetailedWorkerType": {
+      "id": "/properties/DetailedWorkerType",
+      "type": "string"
+    },
+    "EgenciaPOSCountry": {
+      "id": "/properties/EgenciaPOSCountry",
+      "type": "string"
+    },
+    "EmployeeID": {
+      "id": "/properties/EmployeeID",
+      "type": "string"
+    },
+    "Entity": {
+      "id": "/properties/Entity",
+      "type": "string"
+    },
+    "HireDate": {
+      "id": "/properties/HireDate",
+      "type": "string"
+    },
+    "IsManager": {
+      "id": "/properties/IsManager",
+      "type": "string"
+    },
+    "LastName": {
+      "id": "/properties/LastName",
+      "type": "string"
+    },
+    "LegalFirstName": {
+      "id": "/properties/LegalFirstName",
+      "type": "string"
+    },
+    "LocationCity": {
+      "id": "/properties/LocationCity",
+      "type": "string"
+    },
+    "LocationCountryFull": {
+      "id": "/properties/LocationCountryFull",
+      "type": "string"
+    },
+    "LocationCountryISO2": {
+      "id": "/properties/LocationCountryISO2",
+      "type": "string"
+    },
+    "LocationDescription": {
+      "id": "/properties/LocationDescription",
+      "type": "string"
+    },
+    "Management_Level": {
+      "id": "/properties/Management_Level",
+      "type": "string"
+    },
+    "PreferredFirstName": {
+      "id": "/properties/PreferredFirstName",
+      "type": "string"
+    },
+    "Preferred_Name": {
+      "id": "/properties/Preferred_Name",
+      "type": "string"
+    },
+    "Preferred_Name_-_Last_Name": {
+      "id": "/properties/Preferred_Name_-_Last_Name",
+      "type": "string"
+    },
+    "PrimaryWorkEmail": {
+      "id": "/properties/PrimaryWorkEmail",
+      "type": "string"
+    },
+    "PublicEmailAddresses": {
+      "id": "/properties/PublicEmailAddresses",
+      "items": {
+        "id": "/properties/PublicEmailAddresses/items",
+        "properties": {
+          "PublicEmailAddress": {
+            "id": "/properties/PublicEmailAddresses/items/properties/PublicEmailAddress",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "Team": {
+      "id": "/properties/Team",
+      "type": "string"
+    },
+    "Time_Zone": {
+      "id": "/properties/Time_Zone",
+      "type": "string"
+    },
+    "WPRDeskNumber": {
+      "id": "/properties/WPRDeskNumber",
+      "type": "string"
+    },
+    "WorkerType": {
+      "id": "/properties/WorkerType",
+      "type": "string"
+    },
+    "Worker_s_Manager_s_Email_Address": {
+      "id": "/properties/Worker_s_Manager_s_Email_Address",
+      "type": "string"
+    },
+    "WorkersManager": {
+      "id": "/properties/WorkersManager",
+      "type": "string"
+    },
+    "WorkersManagersEmployeeID": {
+      "id": "/properties/WorkersManagersEmployeeID",
+      "type": "string"
+    },
+    "businessTitle": {
+      "id": "/properties/businessTitle",
+      "type": "string"
+    },
+    "isDirectorOrAbove": {
+      "id": "/properties/isDirectorOrAbove",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}
