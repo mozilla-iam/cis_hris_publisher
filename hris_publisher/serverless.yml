@@ -1,0 +1,57 @@
+service: cis-hris-publisher
+plugins:
+  - serverless-python-requirements
+custom:
+  stage: ${env:STAGE}
+  pythonRequirements:
+    dockerizePip: false
+    dockerImage: mozillaiam/docker-sls:latest
+    cleanupZipHelper: true
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${env:STAGE}
+  region: us-west-2
+  iamRoleStatements:
+      -  Effect: "Allow"
+         Action:
+           - "s3:ListBucket"
+           - "s3:GetBucketLocation"
+           - "s3:ListAllMyBuckets"
+           - "s3:GetBucketTagging"
+         Resource:
+           - "*"
+      -  Effect: "Allow"
+         Action:
+           - "s3:GetObject"
+         Resource:
+           - "arn:aws:s3:::*-cis-hris-publisher.mozilla.com/*"
+      -
+        Effect: "Allow"
+        Action:
+          - "sts:AssumeRole"
+        Resource:
+          - "arn:aws:iam::*:role/CISPublisherRole"
+      -
+        Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
+          - "dynamodb:Query"
+          - "dynamodb:Scan"
+        Resource:
+          - "arn:aws:dynamodb:*:*:table/*IdentityVaultUsers*"
+functions:
+  hris-data-processor:
+    handler: publish.handle
+    environment: ${file(${self:custom.stage}-vars.yml)}
+
+resources:
+  Resources:
+    DataBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.stage}-cis-hris-publisher.mozilla.com
+        Tags:
+          -
+            Key: app
+            Value: hris_publisher

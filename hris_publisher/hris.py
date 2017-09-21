@@ -14,10 +14,11 @@ class HrisJSON(object):
         self.from_file = False
         self.file_name = 'hris.json'
         self.s3_bucket = None
+        self.bucket_name = None
 
     def load(self):
         """Fetch the file as stream from the s3 bucket."""
-        if self.from_file:
+        if self.from_file is True:
             hris_json = os.path.join(
                 os.path.abspath(os.path.dirname(__file__)),
                 '../sample_data/{file_name}'.format(file_name=self.file_name)

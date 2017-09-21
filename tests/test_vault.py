@@ -14,6 +14,4 @@ class HRISTest(unittest.TestCase):
         boto_session = boto3.session.Session(region_name='us-west-2')
         v = vault.Search(boto_session)
         record = v.find_by_email('akrug@mozilla.com')
-        print(record)
-        assert 0
         assert record is not None

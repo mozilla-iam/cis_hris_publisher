@@ -36,6 +36,7 @@ def handle(event=None, context={}):
 
     valid_records = []
     dead_letters = []
+    invalid_records = []
     # For each user validate they have the required fields.
     for record in hr_data.get('Report_Entry'):
         # If user valid go ahead and push them onto a list to use as a stack.
@@ -112,7 +113,8 @@ def handle(event=None, context={}):
                 'firstName': vault_record.get('firstName'),
                 'lastName': vault_record.get('lastName'),
 
-                # Hardcoded fields
+                # Hardcoded fields these can not currently be set in profile editor.
+                # Future integration for Mozillians.org
                 'preferredLanguage': 'en_US',
                 'phoneNumbers': [],
                 'nicknames': [],
@@ -120,8 +122,6 @@ def handle(event=None, context={}):
                 'PGPFingerprints': [],
                 'authoritativeGroups': []
             }
-
-            print(pprint.pprint(data))
 
             cis_change = ChangeDelegate(publisher, {}, data)
             cis_change.boto_session = cis_publisher_session
@@ -132,13 +132,14 @@ def handle(event=None, context={}):
                     result=result
                 )
             )
-
         else:
-            logger.error('Could not find record in vault for user: {user}'.format(user=email))
+            # logger.error('Could not find record in vault for user: {user}'.format(user=email))
+            invalid_records.append('1')
             continue
 
-    logger.info('Processing complete dead_letter_count: {dl}, valid_records: {vr}'.format(
+    logger.info('Processing complete dead_letter_count: {dl}, valid_records: {vr}, unlocated_in_vault: {iv}'.format(
             dl=len(dead_letters),
-            vr=len(valid_records)
+            vr=len(valid_records),
+            iv=len(invalid_records)
         )
     )

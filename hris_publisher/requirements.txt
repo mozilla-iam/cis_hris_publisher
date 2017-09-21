@@ -1,6 +1,24 @@
 git+git://github.com/mozilla-iam/cis.git@master#egg=cis
-jsonschema
-everett==0.9
-pluginbase
 boto3 #no-deploy
 botocore #no-deploy
+appdirs==1.4.3
+argh==0.26.2
+asn1crypto==0.22.0
+cffi==1.10.0
+configobj==5.0.6
+cryptography==2.0
+docutils==0.13.1
+everett==0.9
+idna==2.5
+jmespath==0.9.2
+jsonschema==2.6.0
+packaging==16.8
+pathtools==0.1.2
+pycparser==2.17
+pyparsing==2.2.0
+python-dateutil==2.6.0
+PyYAML==3.12
+s3transfer==0.1.10
+six==1.10.0
+watchdog==0.8.3
+pluginbase
