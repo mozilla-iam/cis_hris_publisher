@@ -1,0 +1,41 @@
+{
+  "Report_Entry": [
+    {
+      "LastName": "Parsys",
+      "Preferred_Name": "Parsys Test",
+      "PreferredFirstName": "Test",
+      "Preferred_Name_-_Last_Name": "Test",
+      "LegalFirstName": "Participation",
+      "EmployeeID": "120120",
+      "businessTitle": "Staff",
+      "IsManager": "FALSE",
+      "isDirectorOrAbove": "FALSE",
+      "Management_Level": "Individual Contributor",
+      "HireDate": "2017-01-05",
+      "CurrentlyActive": "1",
+      "Entity": "Test Corporation",
+      "Team": "A-team",
+      "Cost_Center": "1000 –  Quality Assurance (QA)",
+      "Cost_Center_Hierarchy": "Center",
+      "WorkerType": "Employee",
+      "DetailedWorkerType": "Regular",
+      "LocationDescription": "Los Angeles (Remote)",
+      "Time_Zone": "GMT-08:00 Pacific Time (Los Angeles)",
+      "LocationCity": "Los Angeles",
+      "LocationState": "California",
+      "LocationCountryFull": "United States of America",
+      "LocationCountryISO2": "CA",
+      "WorkersManager": "Iam Star",
+      "WorkersManagersEmployeeID": "123456",
+      "Worker_s_Manager_s_Email_Address": "iam_test@mozilla.com",
+      "PrimaryWorkEmail": "parsys_test@mozilla.com",
+      "WPRDeskNumber": "Off-Site",
+      "EgenciaPOSCountry": "US",
+      "PublicEmailAddresses": [
+        {
+          "PublicEmailAddress": "parsys_test@mozilla.com"
+        }
+      ]
+    }
+  ]
+}
