@@ -87,7 +87,8 @@ class HRISTest(unittest.TestCase):
             'hris_individual_contributor',
             'hris_direct_reports_unknown',
             'hris_nonmanagers',
-            'hris_egencia_ws'
+            'hris_egencia_ws',
+            'hris_is_staff'
         ]
 
         h = hris.HrisJSON(boto_session=None)
@@ -97,7 +98,7 @@ class HRISTest(unittest.TestCase):
         hris_mock_json_entry = hris_mock_json.get('Report_Entry')[0]
 
         groups = h.to_groups(hris_mock_json_entry)
-        print(groups)
+
         for group in groups:
             assert group in groups_present
 

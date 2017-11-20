@@ -1,10 +1,16 @@
 import boto3
 import json
+import logging
 import os
 
+from cis.libs import utils
 from botocore.exceptions import ClientError
 from jsonschema import validate as jsonschema_validate
 from jsonschema.exceptions import ValidationError
+
+
+sl = utils.StructuredLogger(name=__name__, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class HrisJSON(object):
@@ -12,7 +18,7 @@ class HrisJSON(object):
     def __init__(self, boto_session):
         self.boto_session = boto_session
         self.from_file = False
-        self.file_name = 'hris.json'
+        self.file_name = 'workday.json'
         self.s3_bucket = None
         self.bucket_name = None
 
@@ -82,7 +88,9 @@ class HrisJSON(object):
 
     def _is_tag_match(self, tag_set):
         for tag in tag_set:
+            logger.info('Attemption to match tag: {}'.format(tag))
             if tag.get('Value') == 'hris_publisher':
+                logger.info('Tag matched. Returning.')
                 return True
         return False
 
@@ -119,7 +127,7 @@ class Groups(object):
         self.cost_center_rule()
         self.cost_center_hierarchy()
         self.management_level_rule()
-        self.manager_name_rule()
+        #self.manager_name_rule() # Temporarily disabled while handling nonascii character sets.
         self.manager_status_rule()
         self.egencia_country_rule()
         self.is_staff_rule()
@@ -137,7 +145,7 @@ class Groups(object):
     def is_staff_rule(self):
         """Check if CurrentlyActive is 1 and add to group accordingly."""
         if self.hris_entry.get('CurrentlyActive') == "1":
-            group_name = 'hris_is_staff'.format(id=cost_center_code)
+            group_name = 'hris_is_staff'
             return self._add_group(group_name)
 
     def cost_center_rule(self):

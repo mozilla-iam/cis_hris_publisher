@@ -25,7 +25,7 @@ provider:
          Action:
            - "s3:GetObject"
          Resource:
-           - "arn:aws:s3:::*-cis-hris-publisher.mozilla.com/*"
+           - "arn:aws:s3:::hris-data-${self:custom.stage}.mozilla.com**"
       -
         Effect: "Allow"
         Action:
@@ -42,16 +42,11 @@ provider:
           - "arn:aws:dynamodb:*:*:table/*IdentityVaultUsers*"
 functions:
   hris-data-processor:
+    timeout: 300
     handler: publish.handle
     environment: ${file(${self:custom.stage}-vars.yml)}
-
-resources:
-  Resources:
-    DataBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.stage}-cis-hris-publisher.mozilla.com
-        Tags:
-          -
-            Key: app
-            Value: hris_publisher
+    events:
+      - schedule:
+          name: 4-hour-sync
+          description: 'Every 4 hours'
+          rate: rate(4 hours)
