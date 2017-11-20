@@ -3,6 +3,8 @@ import logging
 from cis.publisher import ChangeDelegate
 from cis.settings import get_config
 
+import pprint
+
 logger = logging.getLogger(__name__)
 
 
@@ -76,6 +78,7 @@ class CISTask(object):
                 'groups':self.vault_record.get('groups'),
                 'firstName': self.vault_record.get('firstName'),
                 'lastName': self.vault_record.get('lastName'),
+                'tags': self.vault_record.get('tags'),
 
                 # XXX TBD Fix this once the attributes are populated and can search person API.
                 # Hardcoded fields these can not currently be set in profile editor.

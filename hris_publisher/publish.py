@@ -58,20 +58,22 @@ def handle(event=None, context={}):
 
         if hris_json.is_valid(record):
             valid_records.append(record)
-            hris_groups = hris_json.to_groups(record)
+
         else:
             logger.error('Record invalid for : {user} deadlettering workday record.'.format(user=email))
             dead_letters.append(record)
 
     # For each user in the valid list
     for record in valid_records:
-        logger.info('Processing record {}'.format(record))
         email = record.get('PrimaryWorkEmail')
         # Retrieve their current profile from the identity vault.
         vault_record = v.find_by_email(email)
 
         # Enrich the profile with the new data fields from HRIS extract. (Groups only for now)
         if vault_record is not None:
+            logger.info('Processing record :{}'.format(record))
+            hris_groups = hris_json.to_groups(record)
+
             t = task.CISTask(
                 boto_session=cis_publisher_session,
                 vault_record=vault_record,
@@ -80,6 +82,7 @@ def handle(event=None, context={}):
 
             data = t.prep()
             t.send(data)
+            logger.info('Data sent to identity vault: {}'.format(data))
         else:
             logger.error('Could not find record in vault for user: {user}'.format(user=email))
             invalid_records.append('1')
