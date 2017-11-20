@@ -113,6 +113,7 @@ def handle(event=None, context={}):
                 'firstName': vault_record.get('firstName'),
                 'lastName': vault_record.get('lastName'),
 
+                # XXX TBD Fix this once the attributes are populated and can search person API.
                 # Hardcoded fields these can not currently be set in profile editor.
                 # Future integration for Mozillians.org
                 'preferredLanguage': 'en_US',

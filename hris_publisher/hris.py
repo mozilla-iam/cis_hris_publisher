@@ -19,6 +19,7 @@ class HrisJSON(object):
     def load(self):
         """Fetch the file as stream from the s3 bucket."""
         if self.from_file is True:
+            # From file set only for development purposes.
             hris_json = os.path.join(
                 os.path.abspath(os.path.dirname(__file__)),
                 '../sample_data/{file_name}'.format(file_name=self.file_name)
@@ -52,7 +53,6 @@ class HrisJSON(object):
 
     def to_groups(self, entry):
         """
-
         :param entry: from the hris.json
         :return: a list of groups to reintegrate to cis beginning with hris_
         """
@@ -77,6 +77,7 @@ class HrisJSON(object):
                     return bucket_name
             except ClientError:
                 # Boto3 throws client error when a bucket has no tags.
+                logger.error('No bucket could be located in the account with HRIS data.  Exiting.')
                 continue
 
     def _is_tag_match(self, tag_set):
@@ -121,8 +122,23 @@ class Groups(object):
         self.manager_name_rule()
         self.manager_status_rule()
         self.egencia_country_rule()
+        self.is_staff_rule()
 
         return self.hris_grouplist
+
+    @property
+    def active(self):
+        """Helper function used in profile creation."""
+        if self.is_staff_rule is not None:
+            return True
+        else:
+            return False
+
+    def is_staff_rule(self):
+        """Check if CurrentlyActive is 1 and add to group accordingly."""
+        if self.hris_entry.get('CurrentlyActive') == "1":
+            group_name = 'hris_is_staff'.format(id=cost_center_code)
+            return self._add_group(group_name)
 
     def cost_center_rule(self):
         """Assert group based on splatting cost center."""
@@ -130,6 +146,8 @@ class Groups(object):
 
         full_cost_center = self.hris_entry.get('Cost_Center')
         cost_center_code = full_cost_center.split(' ')[0]
+
+        cost_center_code = int(cost_center_code)
 
         group_name = 'hris_costcenter_{id}'.format(id=cost_center_code)
         return self._add_group(group_name)

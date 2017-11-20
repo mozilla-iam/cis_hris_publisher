@@ -22,9 +22,17 @@ TBD
 Enrich Parsys_Test with some HRIS data as part of every run.
 Request additional LDAP Test Account (Viorela)
 
+# Testing
 
+Due to the nature of the complex interactions these tests can only be run by a developer who has assumed the
+CIS developer role.
+
+# How to Run Locally
+
+```
 docker run --rm -ti \
 -v ~/.aws:/root/.aws \
 -v ~/workspace/cis_hris_publisher/:/workspace \
 mozillaiam/docker-sls:latest \
 /bin/bash
+```
