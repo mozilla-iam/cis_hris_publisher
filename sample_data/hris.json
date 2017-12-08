@@ -1,0 +1,41 @@
+{
+  "Report_Entry": [
+    {
+      "LastName": "Stark",
+      "Preferred_Name": "Arya Stark",
+      "PreferredFirstName": "Arya",
+      "Preferred_Name_-_Last_Name": "Stark",
+      "LegalFirstName": "NoOne",
+      "EmployeeID": "8675309",
+      "businessTitle": "Currently Unknown",
+      "IsManager": "FALSE",
+      "isDirectorOrAbove": "FALSE",
+      "Management_Level": "Individual Contributor",
+      "HireDate": "2017-02-06",
+      "CurrentlyActive": "1",
+      "Entity": "Westeros Corporation",
+      "Team": "Children of (Ned Stark)",
+      "Cost_Center": "9999 - Iron Bank of Bravos (IBB)",
+      "Cost_Center_Hierarchy": "North",
+      "WorkerType": "Employee",
+      "DetailedWorkerType": "Regular",
+      "LocationDescription": "Winterfell (Remote)",
+      "Time_Zone": "GMT-08:00 Pacific Time (Los Angeles)",
+      "LocationCity": "Winterfell",
+      "LocationState": "North",
+      "LocationCountryFull": "The 7 Kingdoms",
+      "LocationCountryISO2": "WS",
+      "WorkersManager": "Unknown",
+      "WorkersManagersEmployeeID": "8675309",
+      "Worker_s_Manager_s_Email_Address": "manager@mozilla.com",
+      "PrimaryWorkEmail": "astark@mozilla.com",
+      "WPRDeskNumber": "Off-Site",
+      "EgenciaPOSCountry": "WS",
+      "PublicEmailAddresses": [
+        {
+          "PublicEmailAddress": "astark@mozilla.com"
+        }
+      ]
+    }
+  ]
+}

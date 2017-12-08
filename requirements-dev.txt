@@ -1,0 +1,4 @@
+localstack
+localstack-client
+nose
+nose-watch

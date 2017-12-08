@@ -1,0 +1,23 @@
+.idea/
+env/
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+hris_publisher/__pycache__/
+hris_publisher/node_modules/
+hris_publisher/.requirements/
+hris_publisher/*.pyc
+# Serverless directories
+.serverless

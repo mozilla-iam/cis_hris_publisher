@@ -1,0 +1,52 @@
+service: cis-hris-publisher
+plugins:
+  - serverless-python-requirements
+custom:
+  stage: ${env:STAGE}
+  pythonRequirements:
+    dockerizePip: false
+    dockerImage: mozillaiam/docker-sls:latest
+    cleanupZipHelper: true
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${env:STAGE}
+  region: us-west-2
+  iamRoleStatements:
+      -  Effect: "Allow"
+         Action:
+           - "s3:ListBucket"
+           - "s3:GetBucketLocation"
+           - "s3:ListAllMyBuckets"
+           - "s3:GetBucketTagging"
+         Resource:
+           - "*"
+      -  Effect: "Allow"
+         Action:
+           - "s3:GetObject"
+         Resource:
+           - "arn:aws:s3:::hris-data-${self:custom.stage}.mozilla.com**"
+      -
+        Effect: "Allow"
+        Action:
+          - "sts:AssumeRole"
+        Resource:
+          - "arn:aws:iam::*:role/CISPublisherRole"
+      -
+        Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
+          - "dynamodb:Query"
+          - "dynamodb:Scan"
+        Resource:
+          - "arn:aws:dynamodb:*:*:table/*IdentityVaultUsers*"
+functions:
+  hris-data-processor:
+    timeout: 300
+    handler: publish.handle
+    environment: ${file(${self:custom.stage}-vars.yml)}
+    events:
+      - schedule:
+          name: 4-hour-sync
+          description: 'Every 4 hours'
+          rate: rate(4 hours)
