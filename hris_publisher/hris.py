@@ -19,7 +19,7 @@ class HrisJSON(object):
     def __init__(self, boto_session):
         self.boto_session = boto_session
         self.from_file = False
-        self.file_name = 'workday.json'
+        self.file_name = 'hris.json'
         self.s3_bucket = None
         self.bucket_name = None
 
@@ -217,7 +217,7 @@ class Groups(object):
         instead of the nearest ASCII equivalents - which is harder to read (thus not used here) though also more correct.
         Use this function only for passing data where unicode is not understood, as a work-around."""
         if input_string:
-            return unicodedata.normalize('NFKD', input_string).encode('ascii', 'ignore')
+            return unicodedata.normalize('NFKD', input_string).encode('ascii', 'ignore').decode('ascii')
 
     def _to_lower(self, input_string):
         return input_string.lower()
