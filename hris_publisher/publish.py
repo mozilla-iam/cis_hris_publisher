@@ -1,6 +1,4 @@
-import base64
 import boto3
-import json
 import logging
 
 import hris
@@ -60,7 +58,7 @@ def handle(event=None, context={}):
             valid_records.append(record)
 
         else:
-            logger.error('Record invalid for : {user} deadlettering workday record.'.format(user=email))
+            # logger.error('Record invalid for : {user} deadlettering workday record.'.format(user=email))
             dead_letters.append(record)
 
     # For each user in the valid list
@@ -81,10 +79,11 @@ def handle(event=None, context={}):
             )
 
             data = t.prep()
-            t.send(data)
+            res = t.send(data)
             logger.info('Data sent to identity vault: {}'.format(data))
+            logger.info('Result of operation in identity vault: {}'.format(res))
         else:
-            logger.error('Could not find record in vault for user: {user}'.format(user=email))
+            # logger.error('Could not find record in vault for user: {user}'.format(user=email))
             invalid_records.append('1')
         continue
 

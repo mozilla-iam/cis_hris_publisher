@@ -1,9 +1,13 @@
+import base64
+
+import json
 import logging
+
+import pprint
 
 from cis.publisher import ChangeDelegate
 from cis.settings import get_config
 
-import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +35,26 @@ class CISTask(object):
         cis_change = ChangeDelegate(self.publisher, {}, data)
         cis_change.boto_session = self.boto_session
 
-        result = cis_change.send()
+
+        event = {
+            'profile': base64.b64encode(cis_change._prepare_profile_data()).decode(),
+            'publisher': {'id': 'hris'},
+            'signature': {}
+        }
+
+        encrypted_profile_data = json.loads(base64.b64decode(event.get('profile')))
+
+        for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
+            encrypted_profile_data[key] = base64.b64decode(encrypted_profile_data[key])
+
+        result = cis_change._invoke_validator(json.dumps(event))
+
         logger.info('Result of the change for user: {user} is {result}'.format(
                 user=self.vault_record.get('primaryEmail'),
                 result=result
             )
         )
+
         return result
 
     def get_groups_for_record(self):
@@ -60,35 +78,6 @@ class CISTask(object):
         logger.info('Groups reintegrated for user: {user}'.format(user=self.vault_record.get('primaryEmail')))
 
     def construct_profile(self):
-            logger.info('Sending profile to CIS for: {user}'.format(user=self.vault_record.get('primaryEmail')))
-
-            data = {
-                'user_id': self.vault_record.get('user_id'),
-                'timezone':  self.vault_record.get('timezone'),
-                'active': self.vault_record.get('active'),
-                'lastModified': self.vault_record.get('lastModified'),
-                'created': self.vault_record.get('created'),
-                'userName': self.vault_record.get('userName'),
-                'displayName': self.vault_record.get('displayName'),
-                'primaryEmail': self.vault_record.get('primaryEmail'),
-                'emails': self.vault_record.get('emails'),
-                'uris': self.vault_record.get('uris'),
-                'picture': self.vault_record.get('picture'),
-                'shirtSize': self.vault_record.get('shirtSize'),
-                'groups':self.vault_record.get('groups'),
-                'firstName': self.vault_record.get('firstName'),
-                'lastName': self.vault_record.get('lastName'),
-                'tags': self.vault_record.get('tags'),
-
-                # XXX TBD Fix this once the attributes are populated and can search person API.
-                # Hardcoded fields these can not currently be set in profile editor.
-                # Future integration for Mozillians.org
-                'preferredLanguage': 'en_US',
-                'phoneNumbers': [],
-                'nicknames': [],
-                'SSHFingerprints': [],
-                'PGPFingerprints': [],
-                'authoritativeGroups': []
-            }
-
-            return data
+        logger.info('Sending profile to CIS for: {user}'.format(user=self.vault_record.get('primaryEmail')))
+        data = self.vault_record
+        return data

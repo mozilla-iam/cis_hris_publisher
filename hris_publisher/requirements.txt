@@ -1,4 +1,4 @@
-git+git://github.com/mozilla-iam/cis.git@master#egg=cis
+https://github.com/mozilla-iam/cis/archive/1.0.zip
 boto3 #no-deploy
 botocore #no-deploy
 appdirs==1.4.3
