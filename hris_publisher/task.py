@@ -3,7 +3,7 @@ import base64
 import json
 import logging
 
-import pprint
+
 
 from cis.publisher import ChangeDelegate
 from cis.settings import get_config

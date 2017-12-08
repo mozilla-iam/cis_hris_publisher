@@ -127,7 +127,7 @@ class Groups(object):
         self.cost_center_rule()
         self.cost_center_hierarchy()
         self.management_level_rule()
-        #self.manager_name_rule() # Temporarily disabled while handling nonascii character sets.
+        self.manager_name_rule()
         self.manager_status_rule()
         self.egencia_country_rule()
         self.is_staff_rule()
