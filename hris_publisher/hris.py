@@ -2,6 +2,7 @@ import boto3
 import json
 import logging
 import os
+import unicodedata
 
 from cis.libs import utils
 from botocore.exceptions import ClientError
@@ -177,6 +178,7 @@ class Groups(object):
         """Add to group for direct manager."""
         manager_name = self.hris_entry.get('WorkersManager')
         manager_name = self._replace_spaces(manager_name)
+        manager_name = self._asciiize(manager_name)
 
         group_name = 'hris_direct_reports_{manager_name}'.format(manager_name=manager_name)
 
@@ -208,6 +210,14 @@ class Groups(object):
     def _replace_spaces(self, input_string):
         if input_string:
             return input_string.replace(" ", "_")
+
+    def _asciiize(self, input_string):
+        """Decodes unicode by replacing non-ASCII with their nearest equivalent, and outputing the result back as
+        ASCII. An alternative to this is to use input_string.code('utf-8') which will use the escaped unicode equivalent
+        instead of the nearest ASCII equivalents - which is harder to read (thus not used here) though also more correct.
+        Use this function only for passing data where unicode is not understood, as a work-around."""
+        if input_string:
+            return unicodedata.normalize('NFKD', input_string).encode('ascii', 'ignore')
 
     def _to_lower(self, input_string):
         return input_string.lower()
