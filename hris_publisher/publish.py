@@ -9,9 +9,9 @@ from cis.libs import utils
 from cis.settings import get_config
 
 
-sl = utils.StructuredLogger(name=__name__, level=logging.DEBUG)
+sl = utils.StructuredLogger(name='cis_hris', level=logging.DEBUG)
 # Logger setUp
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('cis_hris')
 
 def dead_letter():
     """Send the profile to the dead letter queue for manual inspection."""

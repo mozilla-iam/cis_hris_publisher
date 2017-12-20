@@ -9,7 +9,7 @@ from cis.publisher import ChangeDelegate
 from cis.settings import get_config
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('cis_hris')
 
 
 class CISTask(object):
@@ -27,14 +27,13 @@ class CISTask(object):
 
     def prep(self):
         current_group_list = self.get_groups_for_record()
-        current_group_list = self.clean_hris_assertions(current_group_list)
-        self.reintegrate_groups(current_group_list)
+        cleaned_group_list = self.clean_hris_assertions(current_group_list)
+        self.reintegrate_groups(cleaned_group_list)
         return self.construct_profile()
 
     def send(self, data):
         cis_change = ChangeDelegate(self.publisher, {}, data)
         cis_change.boto_session = self.boto_session
-
 
         event = {
             'profile': base64.b64encode(cis_change._prepare_profile_data()).decode(),
@@ -61,6 +60,7 @@ class CISTask(object):
         return self.vault_record.get('groups')
 
     def clean_hris_assertions(self, current_group_list):
+        cleaned_group_list = []
         for group in current_group_list:
             # Remove existing groups with hris_ attrs from assertions.
             if group.find('hris_') == 0:
@@ -69,12 +69,15 @@ class CISTask(object):
                         group=group
                     )
                 )
-                current_group_list.pop(current_group_list.index(group))
-        return current_group_list
+            else:
+                cleaned_group_list.append(group)
+        return cleaned_group_list
 
-    def reintegrate_groups(self, current_group_list):
+    def reintegrate_groups(self, cleaned_group_list):
         # Add the new assumptions we made about the user to the current grouplist
-        self.vault_record['groups'] = current_group_list + self.hris_groups
+        superset_of_groups = cleaned_group_list + self.hris_groups
+        self.vault_record['groups'] = superset_of_groups
+
         logger.info('Groups reintegrated for user: {user}'.format(user=self.vault_record.get('primaryEmail')))
 
     def construct_profile(self):

@@ -11,7 +11,7 @@ from jsonschema.exceptions import ValidationError
 
 
 sl = utils.StructuredLogger(name=__name__, level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('cis_hris')
 
 
 class HrisJSON(object):
@@ -19,7 +19,7 @@ class HrisJSON(object):
     def __init__(self, boto_session):
         self.boto_session = boto_session
         self.from_file = False
-        self.file_name = 'hris.json'
+        self.file_name = 'workday.json'
         self.s3_bucket = None
         self.bucket_name = None
 
@@ -128,7 +128,8 @@ class Groups(object):
         self.cost_center_rule()
         self.cost_center_hierarchy()
         self.management_level_rule()
-        self.manager_name_rule()
+        # Manager name removed for architectural reasons.
+        # self.manager_name_rule()
         self.manager_status_rule()
         self.egencia_country_rule()
         self.is_staff_rule()
