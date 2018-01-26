@@ -1,4 +1,6 @@
-https://github.com/mozilla-iam/cis/archive/1.0.zip
+git+https://github.com/mozilla-iam/cis.git
+git+https://github.com/mozilla-iam/pykmssig.git
+credstash
 boto3 #no-deploy
 botocore #no-deploy
 appdirs==1.4.3

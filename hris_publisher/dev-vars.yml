@@ -4,5 +4,10 @@ CIS_STREAM_ARN: arn:aws:kinesis:us-west-2:656532927350:stream/CISStaging-Vaultan
 CIS_KINESIS_STREAM_NAME: CISStaging-VaultandStreams-CISInputStream-P7DYU9FBQ2OW
 CIS_IAM_ROLE_ARN: arn:aws:iam::656532927350:role/CISPublisherRole
 CIS_PUBLISHER_NAME: hris
-CIS_IAM_ROLE_SESSION_NAME: staging_hris_client
+CIS_IAM_ROLE_SESSION_NAME: dev_hris_client
 CIS_LAMBDA_VALIDATOR_ARN: arn:aws:lambda:us-west-2:656532927350:function:cis_functions_stage_validator
+CIS_PERSON_API_URL: https://person-api.sso.allizom.org
+CIS_PERSON_API_AUDIENCE: https://person-api.sso.allizom.org
+CIS_PERSON_API_VERSION: v1
+CIS_OAUTH2_DOMAIN: auth-dev.mozilla.auth0.com
+LDAP_NAMESPACE: Mozilla-LDAP-Dev
