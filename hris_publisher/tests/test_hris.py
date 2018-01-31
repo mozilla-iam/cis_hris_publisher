@@ -5,16 +5,19 @@ import unittest
 class HRISTest(unittest.TestCase):
     def setUp(self):
         h = hris.HrisJSON(boto_session=None)
+        h.file_name = 'hris.json'
         assert h is not None
 
     def test_file_loads(self):
         h = hris.HrisJSON(boto_session=None)
+        h.file_name = 'hris.json'
         h.from_file = True
         hris_mock_json = h.load()
         assert isinstance(hris_mock_json, dict)
 
     def test_group_object(self):
         h = hris.HrisJSON(boto_session=None)
+        h.file_name = 'hris.json'
         h.from_file = True
         hris_mock_json = h.load()
 
@@ -28,6 +31,7 @@ class HRISTest(unittest.TestCase):
 
     def test_group_object_returns_list(self):
         h = hris.HrisJSON(boto_session=None)
+        h.file_name = 'hris.json'
         h.from_file = True
         hris_mock_json = h.load()
 
@@ -43,6 +47,7 @@ class HRISTest(unittest.TestCase):
 
     def test_group_object_rules(self):
         h = hris.HrisJSON(boto_session=None)
+        h.file_name = 'hris.json'
         h.from_file = True
         hris_mock_json = h.load()
 
@@ -93,6 +98,7 @@ class HRISTest(unittest.TestCase):
 
         h = hris.HrisJSON(boto_session=None)
         h.from_file = True
+        h.file_name = 'hris.json'
         hris_mock_json = h.load()
 
         hris_mock_json_entry = hris_mock_json.get('Report_Entry')[0]
