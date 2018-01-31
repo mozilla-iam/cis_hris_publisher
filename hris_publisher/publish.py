@@ -1,11 +1,14 @@
 import boto3
 import logging
+import os
 
 import hris
 import task
+import utils
 import vault
 
 from cis.libs import utils
+from cis.libs.api import Person
 from cis.settings import get_config
 
 
@@ -37,17 +40,29 @@ def assume_role_session():
 
 def handle(event=None, context={}):
     # Load the file of HRIS Data.
+    os.environ["CIS_CLIENT_ID"] = utils.get_secret('cis_hris_publisher.client_id', {'app': 'cis_hris_publisher'})
+    os.environ["CIS_CLIENT_SECRET"] = utils.get_secret('cis_hris_publisher.client_secret', {'app': 'cis_hris_publisher'})
+
     boto_session = boto3.session.Session(region_name='us-west-2')
     hris_json = hris.HrisJSON(boto_session)
     hr_data = hris_json.load()
-
-    v = vault.Search(boto_session)
 
     valid_records = []
     dead_letters = []
     invalid_records = []
 
     cis_publisher_session = assume_role_session()
+
+    person_api = Person(
+        person_api_config = {
+            'audience': os.getenv('CIS_PERSON_API_AUDIENCE')
+            'client_id': utils.get_secret('cis_hris_publisher.client_id', {'app': 'cis_hris_publisher'})
+            'client_secret': utils.get_secret('cis_hris_publisher.client_secret', {'app': 'cis_hris_publisher'})
+            'oauth2_domain': os.getenv('CIS_OAUTH2_DOMAIN')
+            'person_api_url': os.getenv('CIS_PERSON_API_URL')
+            'person_api_version': os.getenv('CIS_PERSON_API_VERSION')
+        }
+    )
 
     # For each user validate they have the required fields.
     for record in hr_data.get('Report_Entry'):
@@ -64,8 +79,8 @@ def handle(event=None, context={}):
     # For each user in the valid list
     for record in valid_records:
         email = record.get('PrimaryWorkEmail')
-        # Retrieve their current profile from the identity vault.
-        vault_record = v.find_by_email(email)
+        # Retrieve their current profile from the identity vault using person-api.
+        vault_record = person_api.get_userinfo('ad|{}|{}'.format(os.getenv('LDAP_NAMESPACE'), email.split('@')[0]))
 
         # Enrich the profile with the new data fields from HRIS extract. (Groups only for now)
         if vault_record is not None:
@@ -78,7 +93,6 @@ def handle(event=None, context={}):
                 hris_groups=hris_groups
             )
 
-            data = t.prep()
             res = t.send(data)
             logger.info('Data sent to identity vault: {}'.format(data))
             logger.info('Result of operation in identity vault: {}'.format(res))
