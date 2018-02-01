@@ -4,12 +4,11 @@ import os
 
 import hris
 import task
-import utils
-import vault
 
 from cis.libs import utils
 from cis.libs.api import Person
 from cis.settings import get_config
+from utils import get_secret
 
 
 sl = utils.StructuredLogger(name='cis_hris', level=logging.DEBUG)
@@ -40,8 +39,8 @@ def assume_role_session():
 
 def handle(event=None, context={}):
     # Load the file of HRIS Data.
-    os.environ["CIS_CLIENT_ID"] = utils.get_secret('cis_hris_publisher.client_id', {'app': 'cis_hris_publisher'})
-    os.environ["CIS_CLIENT_SECRET"] = utils.get_secret('cis_hris_publisher.client_secret', {'app': 'cis_hris_publisher'})
+    os.environ["CIS_OAUTH2_CLIENT_ID"] = get_secret('cis_hris_publisher.client_id', dict(app='cis_hris_publisher'))
+    os.environ["CIS_OAUTH2_CLIENT_SECRET"] = get_secret('cis_hris_publisher.client_secret', dict(app='cis_hris_publisher'))
 
     boto_session = boto3.session.Session(region_name='us-west-2')
     hris_json = hris.HrisJSON(boto_session)
@@ -55,11 +54,11 @@ def handle(event=None, context={}):
 
     person_api = Person(
         person_api_config = {
-            'audience': os.getenv('CIS_PERSON_API_AUDIENCE')
-            'client_id': utils.get_secret('cis_hris_publisher.client_id', {'app': 'cis_hris_publisher'})
-            'client_secret': utils.get_secret('cis_hris_publisher.client_secret', {'app': 'cis_hris_publisher'})
-            'oauth2_domain': os.getenv('CIS_OAUTH2_DOMAIN')
-            'person_api_url': os.getenv('CIS_PERSON_API_URL')
+            'audience': os.getenv('CIS_PERSON_API_AUDIENCE'),
+            'client_id': get_secret('cis_hris_publisher.client_id', dict(app='cis_hris_publisher')),
+            'client_secret': get_secret('cis_hris_publisher.client_secret', dict(app='cis_hris_publisher')),
+            'oauth2_domain': os.getenv('CIS_OAUTH2_DOMAIN'),
+            'person_api_url': os.getenv('CIS_PERSON_API_URL'),
             'person_api_version': os.getenv('CIS_PERSON_API_VERSION')
         }
     )
@@ -78,12 +77,17 @@ def handle(event=None, context={}):
 
     # For each user in the valid list
     for record in valid_records:
-        email = record.get('PrimaryWorkEmail')
+        email = record.get('PrimaryWorkEmail', None)
+
         # Retrieve their current profile from the identity vault using person-api.
-        vault_record = person_api.get_userinfo('ad|{}|{}'.format(os.getenv('LDAP_NAMESPACE'), email.split('@')[0]))
+        logger.info('Attempting retrieval of user: {}'.format(email))
+        if email is not None:
+            vault_record = person_api.get_userinfo('ad|{}|{}'.format(os.getenv('LDAP_NAMESPACE'), email.split('@')[0]))
+        else:
+            vault_record = None
 
         # Enrich the profile with the new data fields from HRIS extract. (Groups only for now)
-        if vault_record is not None:
+        if vault_record is not None and vault_record != {}:
             logger.info('Processing record :{}'.format(record))
             hris_groups = hris_json.to_groups(record)
 
@@ -93,9 +97,10 @@ def handle(event=None, context={}):
                 hris_groups=hris_groups
             )
 
-            res = t.send(data)
-            logger.info('Data sent to identity vault: {}'.format(data))
+            res = t.send()
+            logger.info('Data sent to identity vault for: {}'.format(email))
             logger.info('Result of operation in identity vault: {}'.format(res))
+            valid_records.append('1')
         else:
             # logger.error('Could not find record in vault for user: {user}'.format(user=email))
             invalid_records.append('1')

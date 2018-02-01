@@ -15,6 +15,20 @@ export CIS_IAM_ROLE_SESSION_NAME=test_hris_client
 export CIS_IAM_ROLE_ARN=arn:aws:iam::656532927350:role/CISPublisherRole
 export CIS_LAMBDA_VALIDATOR_ARN=arn:aws:lambda:us-west-2:656532927350:function:cis_functions_stage_validator
 
+
+## Prod variables
+
+`export STAGE=prod`
+
+export CIS_DYNAMODB_TABLE=cis-stream-prod-and-idv-IdentityVaultUsers-LMGGZ2XE8K6F
+export CIS_ARN_MASTER_KEY=arn:aws:kms:us-west-2:371522382791:key/adef50ad-2846-46df-b783-1c8f35e858cb
+export CIS_STREAM_ARN=arn:aws:kinesis:us-west-2:371522382791:stream/cis-stream-prod-and-idv-CISInputStream-1R29T8G6ZQTQ5
+export CIS_KINESIS_STREAM_NAME=cis-stream-prod-and-idv-CISInputStream-1R29T8G6ZQTQ5
+export CIS_IAM_ROLE_ARN=arn:aws:iam::371522382791:role/CISPublisherRole
+export CIS_PUBLISHER_NAME=hris
+export CIS_IAM_ROLE_SESSION_NAME=prod_hris_client
+export CIS_LAMBDA_VALIDATOR_ARN=arn:aws:lambda:us-west-2:371522382791:function:cis_functions_prod_validator
+
 # Deployment Instructions
 TBD
 

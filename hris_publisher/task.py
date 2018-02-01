@@ -24,24 +24,12 @@ class CISTask(object):
             'id': config('publisher_name', namespace='cis')
         }
 
-    def send(self, data):
-        cis_change = ChangeDelegate(self.publisher, {}, data)
+    def send(self):
+        self.vault_record['groups'] = self.hris_groups
+        cis_change = ChangeDelegate(self.publisher, {}, self.vault_record)
         cis_change.boto_session = self.boto_session
 
-        vault_record['groups'] = hris_groups
-
-        event = {
-            'profile': base64.b64encode(cis_change._prepare_profile_data()).decode(),
-            'publisher': {'id': 'hris'},
-            'signature': None
-        }
-
-        encrypted_profile_data = json.loads(base64.b64decode(event.get('profile')))
-
-        for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
-            encrypted_profile_data[key] = base64.b64decode(encrypted_profile_data[key])
-
-        result = cis_change._invoke_validator(json.dumps(event))
+        result = cis_change.send()
 
         logger.info('Result of the change for user: {user} is {result}'.format(
                 user=self.vault_record.get('primaryEmail'),

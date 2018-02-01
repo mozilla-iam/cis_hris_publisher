@@ -47,6 +47,6 @@ functions:
     environment: ${file(${self:custom.stage}-vars.yml)}
     events:
       - schedule:
-          name: 4-hour-sync
-          description: 'Every 4 hours'
+          name:cis-hris-publisher-4-hour-sync
+          description: 'Every 4 hours sync hris extract with the identity vault.'
           rate: rate(4 hours)
