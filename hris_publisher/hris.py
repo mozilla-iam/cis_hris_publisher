@@ -133,6 +133,7 @@ class Groups(object):
         self.manager_status_rule()
         self.egencia_country_rule()
         self.is_staff_rule()
+        self.worker_type_rule()
 
         return self.hris_grouplist
 
@@ -185,6 +186,14 @@ class Groups(object):
         manager_name = self._asciiize(manager_name)
 
         group_name = 'hris_direct_reports_{manager_name}'.format(manager_name=manager_name)
+
+        return self._add_group(group_name)
+
+    def worker_type_rule(self):
+        """Add worker type."""
+        worker_type = self.hris_entry.get('WorkerType')
+        worker_type = self._to_lower(worker_type)
+        group_name = 'hris_workertype_{worker_type}'.format(worker_type=worker_type)
 
         return self._add_group(group_name)
 
