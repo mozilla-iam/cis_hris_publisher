@@ -1,4 +1,3 @@
-CIS_DYNAMODB_TABLE: CISStaging-VaultandStreams-IdentityVaultUsers-O35P6M8U9LNW
 CIS_ARN_MASTER_KEY: arn:aws:kms:us-west-2:656532927350:key/9e231aa0-04e4-4517-a45d-633c3bb055f0
 CIS_STREAM_ARN: arn:aws:kinesis:us-west-2:656532927350:stream/CISStaging-VaultandStreams-CISInputStream-P7DYU9FBQ2OW
 CIS_KINESIS_STREAM_NAME: CISStaging-VaultandStreams-CISInputStream-P7DYU9FBQ2OW
@@ -10,4 +9,8 @@ CIS_PERSON_API_URL: person-api.sso.allizom.org
 CIS_PERSON_API_AUDIENCE: https://person-api.sso.allizom.org
 CIS_PERSON_API_VERSION: v1
 CIS_OAUTH2_DOMAIN: auth-dev.mozilla.auth0.com
+CIS_LOGGING_OUTPUT: cloudwatch
+CIS_LOGGING_LEVEL: DEBUG
+CIS_CLOUDWATCH_LOG_GROUP: staging
 LDAP_NAMESPACE: Mozilla-LDAP-Dev
+SIGNING_KEY_ARN: arn:aws:kms:us-west-2:656532927350:key/33a642fd-dd44-4405-9c85-2ad32eeeb87b

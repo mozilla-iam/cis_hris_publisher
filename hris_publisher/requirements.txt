@@ -1,5 +1,3 @@
-git+https://github.com/mozilla-iam/cis.git
-git+https://github.com/mozilla-iam/pykmssig.git
 credstash
 boto3 #no-deploy
 botocore #no-deploy
@@ -24,3 +22,5 @@ s3transfer==0.1.10
 six==1.10.0
 watchdog==0.8.3
 pluginbase
+pykmssig
+git+git://github.com/mozilla-iam/cis.git@85947b70b21f1ad9d4878519d79b127d2e5fcd56#egg=mozilla_iam_cis
