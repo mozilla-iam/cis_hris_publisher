@@ -4,6 +4,7 @@ import os
 
 import hris
 import task
+import threading
 
 from cis.libs import utils
 from cis.libs.api import Person
@@ -37,46 +38,11 @@ def assume_role_session():
         region_name='us-west-2'
     )
 
-def handle(event=None, context={}):
-    # Load the file of HRIS Data.
-    os.environ["CIS_OAUTH2_CLIENT_ID"] = get_secret('cis_hris_publisher.client_id', dict(app='cis_hris_publisher'))
-    os.environ["CIS_OAUTH2_CLIENT_SECRET"] = get_secret('cis_hris_publisher.client_secret', dict(app='cis_hris_publisher'))
+def publish(record, boto_session, cis_publisher_session, hris_json, person_api):
+    # If user valid go ahead and push them onto a list to use as a stack.
+    email = record.get('PrimaryWorkEmail')
 
-    boto_session = boto3.session.Session(region_name='us-west-2')
-    hris_json = hris.HrisJSON(boto_session)
-    hr_data = hris_json.load()
-
-    valid_records = []
-    dead_letters = []
-    invalid_records = []
-
-    cis_publisher_session = assume_role_session()
-
-    person_api = Person(
-        person_api_config = {
-            'audience': os.getenv('CIS_PERSON_API_AUDIENCE'),
-            'client_id': get_secret('cis_hris_publisher.client_id', dict(app='cis_hris_publisher')),
-            'client_secret': get_secret('cis_hris_publisher.client_secret', dict(app='cis_hris_publisher')),
-            'oauth2_domain': os.getenv('CIS_OAUTH2_DOMAIN'),
-            'person_api_url': os.getenv('CIS_PERSON_API_URL'),
-            'person_api_version': os.getenv('CIS_PERSON_API_VERSION')
-        }
-    )
-
-    # For each user validate they have the required fields.
-    for record in hr_data.get('Report_Entry'):
-        # If user valid go ahead and push them onto a list to use as a stack.
-        email = record.get('PrimaryWorkEmail')
-
-        if hris_json.is_valid(record):
-            valid_records.append(record)
-
-        else:
-            # logger.error('Record invalid for : {user} deadlettering workday record.'.format(user=email))
-            dead_letters.append(record)
-
-    # For each user in the valid list
-    for record in valid_records:
+    if hris_json.is_valid(record):
         email = record.get('PrimaryWorkEmail', None)
 
         # Retrieve their current profile from the identity vault using person-api.
@@ -100,15 +66,40 @@ def handle(event=None, context={}):
             res = t.send()
             logger.info('Data sent to identity vault for: {}'.format(email))
             logger.info('Result of operation in identity vault: {}'.format(res))
-            valid_records.append('1')
         else:
-            # logger.error('Could not find record in vault for user: {user}'.format(user=email))
-            invalid_records.append('1')
-        continue
+            logger.error('Could not find record in vault for user: {user}'.format(user=email))
 
-    logger.info('Processing complete dead_letter_count: {dl}, valid_records: {vr}, unlocated_in_vault: {iv}'.format(
-            dl=len(dead_letters),
-            vr=len(valid_records),
-            iv=len(invalid_records)
-        )
+
+def handle(event=None, context={}):
+    boto_session = boto3.session.Session(region_name='us-west-2')
+    hris_json = hris.HrisJSON(boto_session)
+    hr_data = hris_json.load()
+
+    boto_session = boto3.session.Session(region_name='us-west-2')
+    cis_publisher_session = assume_role_session()
+    hris_json = hris.HrisJSON(boto_session)
+
+    # Load the file of HRIS Data.
+    os.environ["CIS_OAUTH2_CLIENT_ID"] = get_secret('cis_hris_publisher.client_id', dict(app='cis_hris_publisher'))
+    os.environ["CIS_OAUTH2_CLIENT_SECRET"] = get_secret('cis_hris_publisher.client_secret', dict(app='cis_hris_publisher'))
+
+    person_api = Person(
+        person_api_config = {
+            'audience': os.getenv('CIS_PERSON_API_AUDIENCE'),
+            'client_id': os.getenv('CIS_OAUTH2_CLIENT_ID'),
+            'client_secret': os.getenv('CIS_OAUTH2_CLIENT_SECRET'),
+            'oauth2_domain': os.getenv('CIS_OAUTH2_DOMAIN'),
+            'person_api_url': os.getenv('CIS_PERSON_API_URL'),
+            'person_api_version': os.getenv('CIS_PERSON_API_VERSION')
+        }
     )
+
+    threads = []
+
+    for record in hr_data.get('Report_Entry'):
+        t = threading.Thread(target=publish, args=[record, boto_session, cis_publisher_session, hris_json, person_api])
+        threads.append(t)
+        t.start()
+
+    for thread in threads:
+        thread.join()

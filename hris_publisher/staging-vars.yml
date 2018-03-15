@@ -10,4 +10,8 @@ CIS_PERSON_API_URL: https://person-api.sso.allizom.org
 CIS_PERSON_API_AUDIENCE: https://person-api.sso.allizom.org
 CIS_PERSON_API_VERSION: v1
 CIS_OAUTH2_DOMAIN: auth-dev.mozilla.auth0.com
+CIS_LOGGING_OUTPUT: cloudwatch
+CIS_LOGGING_LEVEL: DEBUG
+CIS_CLOUDWATCH_LOG_GROUP: staging
 LDAP_NAMESPACE: Mozilla-LDAP-Dev
+SIGNING_KEY_ARN: arn:aws:kms:us-west-2:656532927350:key/33a642fd-dd44-4405-9c85-2ad32eeeb87b

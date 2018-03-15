@@ -7,6 +7,9 @@ custom:
     dockerizePip: false
     dockerImage: mozillaiam/docker-sls:latest
     cleanupZipHelper: true
+    pipCmdExtraArgs:
+        - --cache-dir
+        - .requirements-cache
 provider:
   name: aws
   runtime: python3.6
@@ -31,7 +34,7 @@ provider:
         Action:
           - "sts:AssumeRole"
         Resource:
-          - "arn:aws:iam::*:role/CISPublisherRole"
+          - ${file(${self:custom.stage}-vars.yml):CIS_IAM_ROLE_ARN}
       -
         Effect: "Allow"
         Action:
@@ -39,7 +42,20 @@ provider:
           - "dynamodb:Query"
           - "dynamodb:Scan"
         Resource:
-          - "arn:aws:dynamodb:*:*:table/*IdentityVaultUsers*"
+          - "arn:aws:dynamodb:*:*:table/credential-store"
+      -
+        Effect: "Allow"
+        Action:
+          - "kms:Encrypt"
+          - "kms:GenerateDataKey"
+        Resource:
+          - ${file(${self:custom.stage}-vars.yml):SIGNING_KEY_ARN}
+      -
+        Effect: "Allow"
+        Action:
+          - "logs:*"
+        Resource:
+          - "arn:aws:logs:*:*:log-group:/cis/**"
 functions:
   hris-data-processor:
     timeout: 300
@@ -47,6 +63,6 @@ functions:
     environment: ${file(${self:custom.stage}-vars.yml)}
     events:
       - schedule:
-          name:cis-hris-publisher-4-hour-sync
+          name: cis-hris-publisher-4-hour-sync
           description: 'Every 4 hours sync hris extract with the identity vault.'
           rate: rate(4 hours)

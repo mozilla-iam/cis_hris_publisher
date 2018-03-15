@@ -157,10 +157,13 @@ class Groups(object):
         full_cost_center = self.hris_entry.get('Cost_Center')
         cost_center_code = full_cost_center.split(' ')[0]
 
-        cost_center_code = int(cost_center_code)
+        try:
+            cost_center_code = int(cost_center_code)
 
-        group_name = 'hris_costcenter_{id}'.format(id=cost_center_code)
-        return self._add_group(group_name)
+            group_name = 'hris_costcenter_{id}'.format(id=cost_center_code)
+            return self._add_group(group_name)
+        except ValueError:
+            logger.error('Could not add cost center code for cost_center: {}'.format(cost_center))
 
     def cost_center_hierarchy(self):
         """Dept groups (really)"""
