@@ -4,6 +4,7 @@ import os
 
 import hris
 import task
+import phonebook
 import threading
 
 from cis.libs import utils
@@ -103,3 +104,9 @@ def handle(event=None, context={}):
 
     for thread in threads:
         thread.join()
+
+def orgchart(event=None, context={}):
+    p = phonebook.OrgChart()
+    p._load_file_from_s3()
+    filtered_attributes = p.filter_org_chart_attributes()
+    p.to_s3(filtered_attributes)

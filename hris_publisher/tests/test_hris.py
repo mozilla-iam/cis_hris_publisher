@@ -105,8 +105,12 @@ class HRISTest(unittest.TestCase):
 
         groups = h.to_groups(hris_mock_json_entry)
 
-        for group in groups:
-            assert group in groups_present
+        assert 'hris_dept_north' in groups
+        assert 'hris_individual_contributor' in groups
+        assert 'hris_nonmanagers' in groups
+        assert 'hris_egencia_ws' in groups
+        assert 'hris_is_staff' in groups
+        assert 'hris_workertype_employee' in groups
 
     def test_groups_validator(self):
         h = hris.HrisJSON(boto_session=None)

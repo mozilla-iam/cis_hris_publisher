@@ -27,6 +27,7 @@ provider:
       -  Effect: "Allow"
          Action:
            - "s3:GetObject"
+           - "s3:PutObject"
          Resource:
            - "arn:aws:s3:::hris-data-${self:custom.stage}.mozilla.com**"
       -
@@ -65,4 +66,13 @@ functions:
       - schedule:
           name: cis-hris-publisher-4-hour-sync
           description: 'Every 4 hours sync hris extract with the identity vault.'
+          rate: rate(4 hours)
+  hris-org-chart:
+    timeout: 300
+    handler: publish.orgchart
+    environment: ${file(${self:custom.stage}-vars.yml)}
+    events:
+      - schedule:
+          name: cis-hris-publish-org-chart-json
+          description: 'Filters data necessary to build orgChart in mozillians.'
           rate: rate(4 hours)
