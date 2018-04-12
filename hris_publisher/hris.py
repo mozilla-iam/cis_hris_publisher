@@ -11,7 +11,7 @@ from jsonschema.exceptions import ValidationError
 
 
 sl = utils.StructuredLogger(name=__name__, level=logging.DEBUG)
-logger = logging.getLogger('cis_hris')
+logger = logging.getLogger(__name__)
 
 
 class HrisJSON(object):
@@ -67,7 +67,7 @@ class HrisJSON(object):
         return g.all
 
     def _locate_s3_bucket(self):
-        """Fine the S3 bucket in the account using bucket tags."""
+        """Find the S3 bucket in the account using bucket tags."""
         if self.boto_session is None:
             self.boto_session = self._connect_boto_session()
 
