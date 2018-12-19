@@ -29,7 +29,8 @@ provider:
            - "s3:GetObject"
            - "s3:PutObject"
          Resource:
-           - "arn:aws:s3:::hris-data-${self:custom.stage}.mozilla.com**"
+           - "arn:aws:s3:::hris-data-hrisbucket-xnbscy81zy29**"
+           - "arn:aws:s3:::hris-data-hrisbucket-1hw47it6fkni1**"
       -
         Effect: "Allow"
         Action:
